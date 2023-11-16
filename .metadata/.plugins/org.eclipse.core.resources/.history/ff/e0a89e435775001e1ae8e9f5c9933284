@@ -1,0 +1,55 @@
+package database;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import books.Book;
+
+public class Crud {
+	
+	public static boolean add(Book book)
+	{
+	    boolean book_inserted=false;
+	    Connection connection=DatabaseConnection.connecttoDb();
+	    String query="insert into book(bookname,price,author) values (?,?,?);";
+	    try {
+			PreparedStatement ps=connection.prepareStatement(query);
+			ps.setString(1,book.getBookname());
+			ps.setFloat(2, book.getPrice());
+			ps.setString(3, book.getAuthor());
+			ps.executeUpdate();
+			book_inserted=true;
+		} 
+	    catch (SQLException e) {e.printStackTrace();}
+	    return book_inserted;
+	}
+	
+	
+	public static void show()
+	{
+		Connection connection=DatabaseConnection.connecttoDb();
+		String query="select * from book;";
+        try {
+			Statement statement=connection.createStatement();
+            ResultSet result=statement.executeQuery(query);
+            while(result.next())
+            {
+            	int id=result.getInt(1);
+            	String bookname=result.getString(2);
+                float price=result.getFloat(3);
+            	String author=result.getString(4);
+            	System.out.println("ID :- "+id);
+            	System.out.println("Book Name :- "+bookname);
+            	System.out.println("Book Price :- "+price);
+            	System.out.println("Author :- "+author);
+            }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+}
